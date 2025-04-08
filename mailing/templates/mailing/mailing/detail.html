@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Детали рассылки</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Рассылка #{{ object.id }}</h5>
+            <p class="card-text">
+                <strong>Статус:</strong> {{ object.get_status_display }}<br>
+                <strong>Частота:</strong> {{ object.get_frequency_display }}<br>
+                <strong>Начало рассылки:</strong> {{ object.start_sending }}<br>
+                <strong>Окончание рассылки:</strong> {{ object.end_sending }}<br>
+                <strong>Сообщение:</strong> {{ object.message.theme }}<br>
+                <strong>Текст сообщения:</strong> {{ object.message.text }}
+            </p>
+            
+            <h6>Клиенты:</h6>
+            <ul>
+                {% for client in object.clients.all %}
+                <li>{{ client.full_name }} ({{ client.email }})</li>
+                {% endfor %}
+            </ul>
+            
+            <div class="btn-group mt-3">
+                <a href="{% url 'mailing:list_mailing' %}" class="btn btn-secondary">Назад к списку</a>
+                <a href="{% url 'mailing:update_mailing' object.pk %}" class="btn btn-warning">Изменить</a>
+                <a href="{% url 'mailing:delete_mailing' object.pk %}" class="btn btn-danger">Удалить</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

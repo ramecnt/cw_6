@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Добро пожаловать в систему рассылок</h1>
+            <p class="lead mb-5">Управляйте вашими рассылками, клиентами и сообщениями в одном месте</p>
+            
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 d-flex flex-column">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Рассылки</h5>
+                            <p class="card-text flex-grow-1">Создавайте и управляйте вашими рассылками</p>
+                            <a href="{% url 'mailing:list_mailing' %}" class="btn btn-primary mt-auto">Перейти к рассылкам</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 d-flex flex-column">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Клиенты</h5>
+                            <p class="card-text flex-grow-1">Управляйте базой ваших клиентов</p>
+                            <a href="{% url 'mailing:list_client' %}" class="btn btn-primary mt-auto">Перейти к клиентам</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 d-flex flex-column">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">Сообщения</h5>
+                            <p class="card-text flex-grow-1">Создавайте и редактируйте шаблоны сообщений</p>
+                            <a href="{% url 'mailing:list_message' %}" class="btn btn-primary mt-auto">Перейти к сообщениям</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if user.is_authenticated %}
+            <div class="mt-5">
+                <h3>Статистика</h3>
+                <div class="row mt-4">
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">Всего рассылок</h5>
+                                <p class="display-4 mt-auto">{{ total_mailings|default:"0" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">Активных рассылок</h5>
+                                <p class="display-4 mt-auto">{{ active_mailings|default:"0" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">Всего клиентов</h5>
+                                <p class="display-4 mt-auto">{{ total_clients|default:"0" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">Уникальных сообщений</h5>
+                                <p class="display-4 mt-auto">{{ total_messages|default:"0" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if latest_blogs %}
+            <div class="mt-5">
+                <h3>Последние статьи блога</h3>
+                <div class="row mt-4">
+                    {% for blog in latest_blogs %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 d-flex flex-column">
+                            {% if blog.preview %}
+                            <img src="{{ blog.preview.url }}" class="card-img-top" alt="{{ blog.title }}">
+                            {% endif %}
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ blog.title }}</h5>
+                                <p class="card-text flex-grow-1">{{ blog.content|truncatewords:30 }}</p>
+                                <div class="d-flex justify-content-between align-items-center mt-auto">
+                                    <small class="text-muted">Просмотров: {{ blog.views_count }}</small>
+                                    <a href="{% url 'blog:blog_detail' blog.slug %}" class="btn btn-primary">Читать</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            {% else %}
+            <div class="mt-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Начните работу с системой</h5>
+                        <p class="card-text">Для доступа к полному функционалу системы, пожалуйста, войдите в свой аккаунт или зарегистрируйтесь.</p>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                            <a href="{% url 'users:login' %}" class="btn btn-primary me-md-2">Войти</a>
+                            <a href="{% url 'users:register' %}" class="btn btn-secondary">Зарегистрироваться</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %} 

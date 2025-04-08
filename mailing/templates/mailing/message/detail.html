@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Детали сообщения</h1>
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ object.theme }}</h5>
+            <p class="card-text">
+                <strong>Текст сообщения:</strong><br>
+                {{ object.text }}
+            </p>
+            
+            <h6>Рассылки с этим сообщением:</h6>
+            <ul>
+                {% for mailing in object.mailings_set.all %}
+                <li>Рассылка #{{ mailing.id }} ({{ mailing.start_sending }} - {{ mailing.end_sending }})</li>
+                {% empty %}
+                <li>Нет активных рассылок с этим сообщением</li>
+                {% endfor %}
+            </ul>
+            
+            <div class="btn-group mt-3">
+                <a href="{% url 'mailing:list_message' %}" class="btn btn-secondary">Назад к списку</a>
+                <a href="{% url 'mailing:update_message' object.pk %}" class="btn btn-warning">Изменить</a>
+                <a href="{% url 'mailing:delete_message' object.pk %}" class="btn btn-danger">Удалить</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

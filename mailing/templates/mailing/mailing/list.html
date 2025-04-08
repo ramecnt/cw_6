@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Список рассылок</h1>
+    <a href="{% url 'mailing:create_mailing' %}" class="btn btn-primary mb-3">Создать рассылку</a>
+    
+    <div class="row">
+        {% for mailing in object_list %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Рассылка #{{ mailing.id }}</h5>
+                    <p class="card-text">
+                        <strong>Статус:</strong> {{ mailing.get_status_display }}<br>
+                        <strong>Частота:</strong> {{ mailing.get_frequency_display }}<br>
+                        <strong>Начало:</strong> {{ mailing.start_sending }}<br>
+                        <strong>Окончание:</strong> {{ mailing.end_sending }}
+                    </p>
+                    <div class="btn-group">
+                        <a href="{% url 'mailing:detail_mailing' mailing.pk %}" class="btn btn-info">Подробнее</a>
+                        <a href="{% url 'mailing:update_mailing' mailing.pk %}" class="btn btn-warning">Изменить</a>
+                        <a href="{% url 'mailing:delete_mailing' mailing.pk %}" class="btn btn-danger">Удалить</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>Нет доступных рассылок</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 
