@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">История попыток рассылок</h3>
+                </div>
+                <div class="card-body">
+                    {% if attempts %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Рассылка</th>
+                                    <th>Время попытки</th>
+                                    <th>Статус</th>
+                                    <th>Ответ сервера</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for attempt in attempts %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'mailing:detail_mailing' attempt.mailing.pk %}">
+                                            {{ attempt.mailing.message.theme }}
+                                        </a>
+                                    </td>
+                                    <td>{{ attempt.date|date:"d.m.Y H:i" }}</td>
+                                    <td>
+                                        {% if attempt.status == True %}
+                                        <span class="badge bg-success">Успешно</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Ошибка</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if attempt.server_response %}
+                                        <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#responseModal{{ attempt.pk }}">
+                                            Показать
+                                        </button>
+                                        {% else %}
+                                        -
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        Нет данных о попытках рассылок
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for attempt in attempts %}
+{% if attempt.server_response %}
+<!-- Modal для отображения ответа сервера -->
+<div class="modal fade" id="responseModal{{ attempt.pk }}" tabindex="-1" aria-labelledby="responseModalLabel{{ attempt.pk }}" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="responseModalLabel{{ attempt.pk }}">Ответ сервера</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <pre>{{ attempt.server_response }}</pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endblock %} 

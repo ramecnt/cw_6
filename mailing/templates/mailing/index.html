@@ -85,15 +85,14 @@
                     {% for blog in latest_blogs %}
                     <div class="col-md-4 mb-4">
                         <div class="card h-100 d-flex flex-column">
-                            {% if blog.preview %}
-                            <img src="{{ blog.preview.url }}" class="card-img-top" alt="{{ blog.title }}">
+                            {% if blog.image %}
+                            <img src="{{ blog.image.url }}" class="card-img-top" alt="{{ blog.heading }}">
                             {% endif %}
                             <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">{{ blog.title }}</h5>
+                                <h5 class="card-title">{{ blog.heading }}</h5>
                                 <p class="card-text flex-grow-1">{{ blog.content|truncatewords:30 }}</p>
                                 <div class="d-flex justify-content-between align-items-center mt-auto">
-                                    <small class="text-muted">Просмотров: {{ blog.views_count }}</small>
-                                    <a href="{% url 'blog:blog_detail' blog.slug %}" class="btn btn-primary">Читать</a>
+                                    <small class="text-muted">Просмотров: {{ blog.views }}</small>
                                 </div>
                             </div>
                         </div>

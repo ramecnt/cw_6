@@ -3,7 +3,7 @@ from django.views.generic import ListView, DetailView, CreateView, DeleteView, U
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 from mailing.forms import MailingForm, BlogForm
-from mailing.models import Mailing, Client, Message, Blog
+from mailing.models import Mailing, Client, Message, Blog, AttemptMailing
 
 
 class IndexView(TemplateView):
@@ -48,6 +48,10 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
     form_class = MailingForm
     template_name = 'mailing/mailing/form.html'
     success_url = reverse_lazy('mailing:list_mailing')
+
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
     def has_permission(self):
         user = self.request.user
@@ -203,7 +207,16 @@ class MessageDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView)
 class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Blog
     form_class = BlogForm
-    template_name = 'blog_form.html'
-    success_url = reverse_lazy('index')
+    template_name = 'mailing/blog_form.html'
+    success_url = reverse_lazy('mailing:index')
     permission_required = 'mailing.add_blog'
     raise_exception = True
+
+
+class MailingAttemptsView(LoginRequiredMixin, ListView):
+    model = AttemptMailing
+    template_name = 'mailing/mailing_attempts.html'
+    context_object_name = 'attempts'
+
+    def get_queryset(self):
+        return AttemptMailing.objects.filter(mailing__owner=self.request.user)
